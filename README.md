@@ -2,6 +2,11 @@
 
 Este projeto é uma ferramenta de Inteligência Artificial capaz de ler sinais cerebrais (EEG) e identificar se uma pessoa está **Relaxada**, **Concentrada** ou em estado **Neutro**. Além da classificação, a ferramenta gera um **Score de Engajamento** de 0 a 100%.
 
+### 🛠️ Tecnologias Principais
+* **Modelagem & XAI:** `XGBoost`, `Scikit-Learn`, `SHAP`, `SciPy`
+* **Interface Visual:** `Streamlit`, `Plotly`, `Pandas`
+* **Engenharia & Testes:** Arquitetura Modular (`src/`) e Testes Unitários (`pytest`)
+
 ---
 
 ## 🚀 Como Executar a Aplicação (Tutorial Passo a Passo)
@@ -34,6 +39,16 @@ streamlit run app.py
 
 Uma aba abrirá automaticamente no seu navegador de internet com a interface do projeto.
 
+### 🧪 Executando os Testes Automatizados
+O projeto conta com uma cobertura inicial de testes unitários para o motor de feature engineering e avaliação de modelos. Para testar o código raiz:
+
+1. Assegure-se de que o ambiente virtual está ativado.
+2. Defina o mapeamento do projeto e execute os testes (exemplo para Windows PowerShell):
+   ```powershell
+   $env:PYTHONPATH="src"
+   pytest tests/
+   ```
+
 ---
 
 ## 📊 Como Usar a Ferramenta
@@ -47,12 +62,13 @@ Uma aba abrirá automaticamente no seu navegador de internet com a interface do 
 
 ---
 
-## 📁 Estrutura do Projeto
-*   `app.py`: O código da interface visual.
-*   `dataset/`: Onde ficam os dados cerebrais.
-*   `models/`: Onde está salvo o "cérebro" da Inteligência Artificial.
-*   `EDA_Mental_State.ipynb`: Análise científica detalhada dos dados.
-*   `RELATORIO_FINAL.md`: Explicação técnica profunda para especialistas.
+## 📁 Arquitetura do Projeto
+* `app.py`: O código central da interface visual interativa (Streamlit).
+* `src/`: **Motor de Engenharia**. Scripts de processamento (`feature_pipeline.py`), treinamento cruzado de ML (`train_models.py`) e análise de negócio (`engagement_analysis.py`).
+* `tests/`: Bateria de **testes unitários** (pytest) simulando comportamentos matemáticos cruciais das features. 
+* `notebooks/EDA_Mental_State.ipynb`: Análise Exploratória de Dados científica detalhada visualmente.
+* `RELATORIO_FINAL.md`: Documentação aprofundada contendo decisões metodológicas, performance dos modelos de M.L. testados e arquitetura (Leitura obrigatória para avaliadores!).
+* `dataset/` e `models/`: Diretórios de armazenamento das amostras temporais brutas/processadas do EEG e do modelo final salvo em `.joblib`.
 
 ---
 *Desenvolvido como parte do teste técnico para Data Scientist na Synapsee.*
