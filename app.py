@@ -6,7 +6,6 @@ import json
 import plotly.graph_objects as go
 import os
 from scipy import stats
-import shap
 
 # Configurações da Página
 st.set_page_config(page_title="Synapsee - EEG Mental State", layout="wide")
@@ -91,6 +90,7 @@ if uploaded_file:
         
         # SHAP - Calculando a explicação para a média da sessão
         # Usar a média do usuário garante que o app não trave renderizando 2000 linhas
+        import shap
         explainer = shap.TreeExplainer(model)
         mean_x_unscaled = X_processed.mean(axis=0).to_frame().T
         mean_x_scaled = scaler.transform(mean_x_unscaled)
