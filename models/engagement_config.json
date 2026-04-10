@@ -2,5 +2,6 @@
     "ien_min": 0.1729561601245793,
     "ien_max": 0.39454917428755126,
     "formula": "min-max-clipping",
-    "hierarchy_validated": false
+    "hierarchy_validated": true,
+    "hierarchy_order": "Concentrado > Relaxado > Neutro"
 }

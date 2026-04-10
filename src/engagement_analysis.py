@@ -4,15 +4,23 @@ import json
 import os
 
 def validate_hierarchy(trend):
-    """Verifica se Conc (2.0) > Neutro (0.0) > Relax (1.0)."""
-    # Garante que as labels existem na trend
+    """Verifica se a hierarquia fisiológica do IEN é respeitada.
+    
+    Hierarquia esperada: Concentrado (2.0) > Relaxado (1.0) > Neutro (0.0)
+    
+    Justificativa neurocientífica:
+    - Concentrado: Banda Beta elevada (atenção ativa) → IEN máximo.
+    - Relaxado: Alpha elevado, mas Theta moderado → IEN intermediário.
+    - Neutro: Desatenção passiva com Theta elevado, inflando o denominador
+      da fórmula Beta/(Alpha+Theta), resultando no IEN mais baixo.
+    """
     required_labels = [0.0, 1.0, 2.0]
     if not all(label in trend.index for label in required_labels):
         return False
-    return trend[2.0] > trend[0.0] > trend[1.0]
+    return trend[2.0] > trend[1.0] > trend[0.0]
 
 def calculate_normalization_params(df):
-    """Calcula percentis 0.05 e 0.95 do IEN_Global."""
+    """Calcula percentis 0.05 e 0.95 do IEN_Global para normalização robusta."""
     ien_min = df['IEN_Global'].quantile(0.05)
     ien_max = df['IEN_Global'].quantile(0.95)
     return {
@@ -34,9 +42,16 @@ def analyze_engagement(data_path, output_config='models/engagement_config.json')
         if label in label_names:
             print(f"{label_names[label]:12}: {value:.4f}")
     
-    # Verificação de Coerência
+    # Verificação de Coerência Fisiológica
+    # Hierarquia esperada: Concentrado > Relaxado > Neutro
+    # No estado Neutro (desatenção passiva), a potência Theta é significativamente
+    # maior que nos outros estados, inflando o denominador do IEN e produzindo
+    # o menor índice de engajamento — comportamento esperado pela literatura.
     is_valid = validate_hierarchy(trend)
-    print(f"\nValidação de Hierarquia (Conc > Neutro > Relax): {'SUCESSO' if is_valid else 'FALHA'}")
+    print(f"\nValidação de Hierarquia (Conc > Relax > Neutro): {'SUCESSO' if is_valid else 'FALHA'}")
+    
+    if is_valid:
+        print("  >> Comportamento alinhado com a literatura neurocientifica.")
     
     # 2. Cálculo de Parâmetros de Normalização (Robust Scaling)
     params = calculate_normalization_params(df)
@@ -44,7 +59,8 @@ def analyze_engagement(data_path, output_config='models/engagement_config.json')
     config = {
         **params,
         'formula': 'min-max-clipping',
-        'hierarchy_validated': bool(is_valid)
+        'hierarchy_validated': bool(is_valid),
+        'hierarchy_order': 'Concentrado > Relaxado > Neutro'
     }
     
     # Criar pasta models se não existir

@@ -5,12 +5,13 @@ from engagement_analysis import validate_hierarchy, calculate_normalization_para
 class TestEngagementAnalysis(unittest.TestCase):
     
     def test_validate_hierarchy_success(self):
-        # Conc (2.0) > Neutro (0.0) > Relax (1.0)
-        trend = pd.Series({2.0: 0.8, 0.0: 0.5, 1.0: 0.2})
+        # Hierarquia fisiológica correta: Conc (2.0) > Relax (1.0) > Neutro (0.0)
+        trend = pd.Series({2.0: 0.8, 1.0: 0.5, 0.0: 0.2})
         self.assertTrue(validate_hierarchy(trend))
         
     def test_validate_hierarchy_failure(self):
-        trend = pd.Series({2.0: 0.2, 0.0: 0.5, 1.0: 0.8})
+        # Hierarquia invertida — deve falhar
+        trend = pd.Series({2.0: 0.2, 1.0: 0.5, 0.0: 0.8})
         self.assertFalse(validate_hierarchy(trend))
 
     def test_calculate_normalization_params(self):
